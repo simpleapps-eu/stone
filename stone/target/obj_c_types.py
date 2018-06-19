@@ -697,8 +697,10 @@ class ObjCTypesGenerator(ObjCBaseGenerator):
                 )
         elif is_string_type(data_type):
             if data_type.pattern or data_type.min_length or data_type.max_length:
-                pattern = data_type.pattern.encode(
-                    'unicode_escape').replace("\"", "\\\"") if data_type.pattern else None
+                pattern = None
+                if data_type.pattern:
+                    tmp = data_type.pattern.encode('unicode_escape')
+                    pattern = tmp.replace(b"\"", b"\\\"").decode('utf-8', 'ignore')
                 validator = '{}:{}'.format(
                     fmt_validator(data_type),
                     fmt_func_args([
