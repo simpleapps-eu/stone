@@ -889,8 +889,11 @@ class ObjCTypesGenerator(ObjCBaseGenerator):
                     first_block = False
 
             with self.block('else'):
-                self._generate_throw_error(
-                    'InvalidTag', '@"Object not properly initialized. Tag has an unknown value."')
+                if union.closed:
+                    self._generate_throw_error(
+                        'InvalidTag', '@"Object not properly initialized. Tag has an unknown value."')
+                else:
+                    self.emit('jsonDict[@".tag"] = @"other";')
 
             self.emit()
             self.emit('return jsonDict;')
@@ -944,8 +947,12 @@ class ObjCTypesGenerator(ObjCBaseGenerator):
                                                                     field),
                                                                 args=fmt_func_args(deserialized_obj_args))))
             self.emit()
-            self._generate_throw_error(
-                'InvalidTag', '[NSString stringWithFormat:@"Tag has an invalid value: \\\"%@\\\".", valueDict[@".tag"]]')
+            if union.closed:
+                self._generate_throw_error(
+                    'InvalidTag', '[NSString stringWithFormat:@"Tag has an invalid value: \\\"%@\\\".", valueDict[@".tag"]]')
+            else:
+                self.emit('return {};'.format(fmt_func_call(caller=fmt_alloc_call(union_name),
+                                                            callee='initWithOther')))
         self.emit()
 
     def _fmt_serialization_call(self, data_type, input_value, serialize):
