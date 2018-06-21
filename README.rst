@@ -2,6 +2,10 @@
 Stone
 *****
 
+This version of stone has some fixes applied in the branch 2759008-fix.
+That branch is used by simpleapps-eu/dropbox-sdk-obj-c-11 which still supports
+iOS 8.0 and macOS 10.10.
+
 *Warning: The documentation is undergoing a rewrite.*
 
 .. image:: https://travis-ci.org/dropbox/stone.svg?branch=master
